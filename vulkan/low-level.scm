@@ -5,6 +5,30 @@
 (define lib-molten-vk
   (dynamic-link "libMoltenVK.dylib"))
 
+(eval-when (expand)
+  (use-modules (srfi srfi-1)
+	       ((vulkan specs) #:prefix specs:))
+
+  (define (enum-value->syntax enum-value accu)
+    (let ([name (specs:enum-value-name enum-value)]
+	  [value (specs:enum-value-value enum-value)])
+      `((define-public ,(string->symbol name) ,value) . ,accu)))
+
+  (define (enum-type->syntax enum-type accu)
+    (let ([enum-values (specs:enum-type-values enum-type)])
+      (fold enum-value->syntax accu enum-values)))
+
+  (define (enum-types->syntax stx)
+    (let ([enums (fold enum-type->syntax '() (specs:enum-types))])
+      (datum->syntax stx (cons 'begin enums)))))
+
+(define-syntax generate-enum-types
+  (lambda (stx)
+    (syntax-case stx ()
+      [(_) (enum-types->syntax stx)])))
+
+(generate-enum-types)
+
 (define-public result int)
 
 ;; (define-public handle uint64)
