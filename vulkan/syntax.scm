@@ -65,15 +65,15 @@
 		 (bs:struct . ,(map struct-type-member->syntax members)))])
     (cons stx accu)))
 
-(struct-type->syntax (specs:make-struct-type "VkPhysicalDeviceIDProperties"
-					     '(("sType" "VkStructureType")
-					       ("pNext" *)
-					       ("deviceUUID" "uint8_t" "VK_UUID_SIZE")
-					       ("driverUUID" "uint8_t" "VK_UUID_SIZE")
-					       ("deviceLUID" "uint8_t" "VK_LUID_SIZE")
-					       ("deviceNodeMask" "uint32_t")
-					       ("deviceLUIDValid" "VkBool32")))
-		     '())
+;; (struct-type->syntax (specs:make-struct-type "VkPhysicalDeviceIDProperties"
+;; 					     '(("sType" "VkStructureType")
+;; 					       ("pNext" *)
+;; 					       ("deviceUUID" "uint8_t" "VK_UUID_SIZE")
+;; 					       ("driverUUID" "uint8_t" "VK_UUID_SIZE")
+;; 					       ("deviceLUID" "uint8_t" "VK_LUID_SIZE")
+;; 					       ("deviceNodeMask" "uint32_t")
+;; 					       ("deviceLUIDValid" "VkBool32")))
+;; 		     '())
 
 (define (struct-types->syntax stx)
   (let ([structs (fold struct-type->syntax '() (specs:struct-types))])
