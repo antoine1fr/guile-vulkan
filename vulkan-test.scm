@@ -1,21 +1,27 @@
-(use-modules (system foreign)
+(use-modules (ice-9 format)
 	     (rnrs bytevectors)
-	     ((vulkan) #:prefix vk:)
-	     ((vulkan low-level) #:prefix ffi:))
+	     (bytestructures guile)
+	     ((vulkan bindings) #:prefix bindings:)
+	     ((vulkan structs) #:prefix structs:))
 
-(define instance-create-info
-  (make-c-struct ffi:instance-create-info
-		 (list ffi:structure-type-instance-create-info
-		       %null-pointer
-		       0
-		       %null-pointer
-		       0
-		       %null-pointer
-		       0
-		       %null-pointer)))
+(format #t "VK_BLEND_FACTOR_ZERO = ~a\n" bindings:VK_BLEND_FACTOR_DST_ALPHA)
+(format #t "VkFormat = ~a\n" bindings:VkFormat)
+(format #t "VkAabbPositionsKHR = ~a\n" structs:VkAabbPositionsKHR)
+(define bs (bytestructure structs:VkAabbPositionsKHR))
 
-(define instance-handle
-  (vk:create-instance instance-create-info))
+;; (define instance-create-info
+;;   (make-c-struct ffi:instance-create-info
+;; 		 (list ffi:structure-type-instance-create-info
+;; 		       %null-pointer
+;; 		       0
+;; 		       %null-pointer
+;; 		       0
+;; 		       %null-pointer
+;; 		       0
+;; 		       %null-pointer)))
+
+;; (define instance-handle
+;;   (vk:create-instance instance-create-info))
 
 ;; (define vk-instances
 ;;   (make-bytevector (* 8 2)))

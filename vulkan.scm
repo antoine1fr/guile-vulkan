@@ -1,6 +1,5 @@
 (define-module (vulkan)
   #:use-module (system foreign)
-  #:use-module ((vulkan low-level) #:prefix ffi:)
   #:use-module (rnrs bytevectors))
 
 (define-public create-instance
