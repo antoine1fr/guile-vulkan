@@ -49,6 +49,10 @@
 
 ;; (enum-types->syntax #'foo)
 
+(define (handle-types->syntax stx)
+  (let* ([handles (map handle-type->syntax (specs:handle-types))])
+    (datum->syntax stx `(begin ,@handles))))
+
 (define (struct-type-member->syntax member)
   (match member
     [(name '*) `(list ',(string->symbol name)
@@ -59,12 +63,11 @@
 			                           (bs:vector ,(string->symbol size)
 					                                  ,(type->symbol type-str)))]))
 
-(define (struct-type->syntax struct-type accu)
+(define (struct-type->syntax struct-type)
   (let* ([name (string->symbol (specs:struct-type-name struct-type))]
-	 [members (specs:struct-type-members struct-type)]
-	 [stx `(define-public ,name
-		       (bs:struct (list ,@(map struct-type-member->syntax members))))])
-    (cons stx accu)))
+	 [members (specs:struct-type-members struct-type)])
+	  `(define-public ,name
+		   (bs:struct (list ,@(map struct-type-member->syntax members))))))
 
 ;; (struct-type->syntax
 ;;  (specs:make-struct-type "VkPhysicalDeviceIDProperties"
@@ -82,10 +85,9 @@
 ;;       (list (car (specs:struct-types))))
 
 (define (struct-types->syntax stx)
-  (let ([structs (fold struct-type->syntax
-                       '()
-                       (specs:struct-types))])
-    (datum->syntax stx `(begin . ,structs))))
+  (let ([structs (map struct-type->syntax
+                      (specs:struct-types))])
+    (datum->syntax stx `(begin ,@structs))))
 
 ;; (define (functions->syntax stx)
 ;;   )

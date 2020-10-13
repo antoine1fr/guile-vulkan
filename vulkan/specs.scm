@@ -24,12 +24,13 @@
 
 	    base-types
 	    enum-types
-	    struct-types))
+	    struct-types
+      handle-types))
 
 (test-begin "vulkan specs")
 
 (define specs
-  (let ([port (open-input-file "../vk.xml")])
+  (let ([port (open-input-file "/home/antoine/repos/guile-vulkan/vk.xml")])
     (ssax:xml->sxml port '())))
 
 (define-record-type <base-type>
@@ -210,13 +211,19 @@
   (let* ([nodes ((sxpath '(// (type (@ (equal? (category "struct")))))) specs)])
     (map node->struct-type nodes)))
 
+(define (handle-types)
+  ((sxpath '(//
+             (type (@ (equal? (category "handle"))))
+             name
+             *text*)) specs))
+
+;; (define commands ((sxpath '(// command)) specs))
+
+;; ((sxpath '(// proto name *text*)) (car commands))
+
+;; (define (node->command command)
+;;   (let* ([name (car ((sxpath '(// proto name *text*)) command))]))
+
+;; (map node->command commands))
+
 (test-end "vulkan specs")
-
-(define commands ((sxpath '(// command)) specs))
-
-((sxpath '(// proto name *text*)) (car commands))
-
-(define (node->command command)
-  (let* ([name (car ((sxpath '(// proto name *text*)) command))]))
-
-(map node->command commands))

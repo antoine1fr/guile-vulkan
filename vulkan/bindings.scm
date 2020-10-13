@@ -7,6 +7,10 @@
   #:export (handle))
 
 (eval-when (expand)
+  (define (handle-type->syntax name)
+    (let* ([symbol (string->symbol name)])
+      `(define-public ,symbol '*)))
+
   (include-from-path "vulkan/syntax.scm"))
 
 (define (load-vulkan names)
@@ -38,14 +42,20 @@
     (syntax-case stx ()
       [(_) (enum-types->syntax stx)])))
 
-(define-syntax generate-function-bindings
+(define-syntax generate-handle-types
   (lambda (stx)
     (syntax-case stx ()
-      [(_) (functions->syntax stx)])))
+      [(_) (handle-types->syntax stx)])))
+
+;; (define-syntax generate-function-bindings
+;;   (lambda (stx)
+;;     (syntax-case stx ()
+;;       [(_) (functions->syntax stx)])))
 
 (generate-base-types)
 (generate-enum-types)
-(generate-function-bindings)
+(generate-handle-types)
+;; (generate-function-bindings)
 
 ;; (define-public result int)
 
