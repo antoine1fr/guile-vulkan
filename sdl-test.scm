@@ -1,0 +1,15 @@
+(use-modules (sdl2)
+             (sdl2 render)
+             (sdl2 video)
+	     (sdl2 events)
+	     ((sdl2 bindings) #:prefix ffi:))
+
+(define (loop window)
+  (let ([e (poll-event)])
+    (if (not (quit-event? e))
+	(loop window))))
+
+(sdl-init)
+(define window (make-window))
+(call-with-window window loop)
+(sdl-quit)
