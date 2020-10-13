@@ -29,7 +29,7 @@
 (test-begin "vulkan specs")
 
 (define specs
-  (let ([port (open-input-file "/Users/cuicui/Downloads/vk.xml")])
+  (let ([port (open-input-file "../vk.xml")])
     (ssax:xml->sxml port '())))
 
 (define-record-type <base-type>
