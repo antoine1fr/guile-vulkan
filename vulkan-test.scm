@@ -4,6 +4,16 @@
 	     ((vulkan bindings) #:prefix bindings:)
 	     ((vulkan structs) #:prefix structs:))
 
+;; TODO: include
+;; TODO: define
+;; TODO: basetype
+;; TODO: handle
+;; DONE: enum
+;; TODO: group
+;; TODO: bitmask
+;; TODO: funcpointer
+;; DONE: struct
+
 (format #t "VK_BLEND_FACTOR_ZERO = ~a\n" bindings:VK_BLEND_FACTOR_DST_ALPHA)
 (format #t "VkFormat = ~a\n" bindings:VkFormat)
 (format #t "VkAabbPositionsKHR = ~a\n" structs:VkAabbPositionsKHR)

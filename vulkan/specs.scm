@@ -211,3 +211,12 @@
     (map node->struct-type nodes)))
 
 (test-end "vulkan specs")
+
+(define commands ((sxpath '(// command)) specs))
+
+((sxpath '(// proto name *text*)) (car commands))
+
+(define (node->command command)
+  (let* ([name (car ((sxpath '(// proto name *text*)) command))]))
+
+(map node->command commands))

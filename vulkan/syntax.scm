@@ -51,30 +51,41 @@
 
 (define (struct-type-member->syntax member)
   (match member
-    [(name '*) `(',(string->symbol name) '*)]
-    [(name type-str) `(',(string->symbol name)
-			,(type->symbol type-str))]
-    [(name type-str size) `(',(string->symbol name)
-			     (bs:vector ,(string->symbol size)
-					,(type->symbol type-str)))]))
+    [(name '*) `(list ',(string->symbol name)
+                      (bs:pointer 'void))]
+    [(name type-str) `(list ',(string->symbol name)
+			                      ,(type->symbol type-str))]
+    [(name type-str size) `(list ',(string->symbol name)
+			                           (bs:vector ,(string->symbol size)
+					                                  ,(type->symbol type-str)))]))
 
 (define (struct-type->syntax struct-type accu)
   (let* ([name (string->symbol (specs:struct-type-name struct-type))]
 	 [members (specs:struct-type-members struct-type)]
 	 [stx `(define-public ,name
-		 (bs:struct . ,(map struct-type-member->syntax members)))])
+		       (bs:struct (list ,@(map struct-type-member->syntax members))))])
     (cons stx accu)))
 
-;; (struct-type->syntax (specs:make-struct-type "VkPhysicalDeviceIDProperties"
-;; 					     '(("sType" "VkStructureType")
-;; 					       ("pNext" *)
-;; 					       ("deviceUUID" "uint8_t" "VK_UUID_SIZE")
-;; 					       ("driverUUID" "uint8_t" "VK_UUID_SIZE")
-;; 					       ("deviceLUID" "uint8_t" "VK_LUID_SIZE")
-;; 					       ("deviceNodeMask" "uint32_t")
-;; 					       ("deviceLUIDValid" "VkBool32")))
-;; 		     '())
+;; (struct-type->syntax
+;;  (specs:make-struct-type "VkPhysicalDeviceIDProperties"
+;; 					               '(("sType" "VkStructureType")
+;; 					                 ("pNext" *)
+;; 					                 ("deviceUUID" "uint8_t" "VK_UUID_SIZE")
+;; 					                 ("driverUUID" "uint8_t" "VK_UUID_SIZE")
+;; 					                 ("deviceLUID" "uint8_t" "VK_LUID_SIZE")
+;; 					                 ("deviceNodeMask" "uint32_t")
+;; 					                 ("deviceLUIDValid" "VkBool32")))
+;;  '())
+
+;; (fold struct-type->syntax
+;;       '()
+;;       (list (car (specs:struct-types))))
 
 (define (struct-types->syntax stx)
-  (let ([structs (fold struct-type->syntax '() (specs:struct-types))])
+  (let ([structs (fold struct-type->syntax
+                       '()
+                       (specs:struct-types))])
     (datum->syntax stx `(begin . ,structs))))
+
+;; (define (functions->syntax stx)
+;;   )

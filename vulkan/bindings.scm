@@ -3,6 +3,7 @@
   #:use-module (ice-9 exceptions)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module ((vulkan structs) #:prefix structs:)
   #:export (handle))
 
 (eval-when (expand)
@@ -19,22 +20,32 @@
      (call/cc
       (lambda (k)
         (with-exception-handler
-            (lambda (x) (k (try-dynamic-link tail)))
+            (lambda (x) (k (load-vulkan tail)))
           (lambda ()
             (dynamic-link name)))))]))
 
-(load-vulkan '("libMoltenVK.dylib"
-               "libvulkan"))
+(define lib-vk
+  (load-vulkan '("libMoltenVK.dylib"
+               "libvulkan")))
 
-(define lib-molten-vk
-  (dynamic-link "libMoltenVK.dylib"))
+(define-syntax generate-base-types
+  (lambda (stx)
+    (syntax-case stx ()
+      [(_) (base-types->syntax stx)])))
 
 (define-syntax generate-enum-types
   (lambda (stx)
     (syntax-case stx ()
       [(_) (enum-types->syntax stx)])))
 
+(define-syntax generate-function-bindings
+  (lambda (stx)
+    (syntax-case stx ()
+      [(_) (functions->syntax stx)])))
+
+(generate-base-types)
 (generate-enum-types)
+(generate-function-bindings)
 
 ;; (define-public result int)
 
